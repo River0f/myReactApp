@@ -6,15 +6,19 @@ import { HitNode } from './components/hitNode';
 function App() {
 
   const [data, setData] = useState<any>({});
+  const [query, setQuery] = useState<string>('');
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await axios.get("http://hn.algolia.com/api/v1/search?query=redux");
+      const response = await axios.get(`http://hn.algolia.com/api/v1/search?query=${query}`);
       setData(response.data);
     }
-    console.log("Fetching");
     fetchData();
-  }, []);
+  }, [query, setQuery]);
+
+  const onQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value);
+  }
 
   let hitsList = [];
 
@@ -31,6 +35,7 @@ function App() {
 
   return (
     <div className={s.app}>
+      <input type="text" value={query} onChange={onQueryChange}></input>
       {hitsList}
     </div>
   );
