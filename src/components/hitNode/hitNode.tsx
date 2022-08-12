@@ -1,12 +1,17 @@
 import s from './hitNode.module.scss';
+import { HitObject } from '../../interfaces';
+import { title } from 'process';
+import { NumericLiteral } from 'typescript/lib/tsserverlibrary';
 
-interface HitProps {
-    title: string;
-    author: string;
-    url: string;
+interface HitNodeProps {
+    hitData: HitObject;
+    key: string;
 }
 
-export const HitNode = ({title, author, url}: HitProps) => {
+export const HitNode = (props: HitNodeProps) => {
+
+    const {title, author, url} = props.hitData;
+
     return (
         <div className={s.container}>
             <h1>{title}</h1>

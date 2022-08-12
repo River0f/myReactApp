@@ -1,7 +1,9 @@
-import axios from "axios";
+
 import { useEffect, useState } from "react";
+import { fetchHits } from "./api/api";
 import s from "./App.module.scss";
 import { HitNode } from './components/hitNode';
+import { HitObject } from "./interfaces";
 
 function App() {
 
@@ -9,11 +11,13 @@ function App() {
   const [query, setQuery] = useState<string>('');
 
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await axios.get(`http://hn.algolia.com/api/v1/search?query=${query}`);
-      setData(response.data);
+    let didCancel = false;
+    fetchHits(query).then((hits) => {
+      setData(hits);
+    });
+    return () => {
+      didCancel = true;
     }
-    fetchData();
   }, [query, setQuery]);
 
   const onQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,12 +27,10 @@ function App() {
   let hitsList = [];
 
   if(data.hits) {
-    hitsList = data.hits.map((node: any) => {
+    hitsList = data.hits.map((node: HitObject) => {
       return <HitNode 
-        title={node.title} 
-        author={node.author} 
-        url={node.url}
         key={node.objectID}
+        hitData={node}
         ></HitNode>
      })
   }
